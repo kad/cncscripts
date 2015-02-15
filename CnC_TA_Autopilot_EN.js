@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name			CnC Tiberium Alliances Autopilot - German [de-DE] 
+// @name			CnC Tiberium Alliances Autopilot - English [en-EN] 
 // @namespace		FlunikTools
 // @include			http*://prodgame*.alliances.commandandconquer.com/*/index.aspx*
-// @description		Autoupgrade deiner Basen, script based on FlunikTools
-// @version			1.1
-// @authors			many others and Chillchef 
+// @description		Autoupgrade your bases, script based on FlunikTools
+// @version			1.1+l0
+// @authors			many others and Chillchef, l0vader 
 // @grant			none
 // @icon			http://eaassets-a.akamaihd.net/cncalliancesweb/static/2.1/theme/cca-home-redux-theme/images/global/logo.png
 
@@ -34,7 +34,7 @@
 						autoUpdateHandleDefense : null,
 						autoUpdateHandleOffense : null,
 						sperre : false,
-						ugZeit : 2000, //zeitintervall f. upgrades
+						ugTime : 2000, //time interval for upgrades
 						AautoUpdateHandle : null,
 						autoUpgradePopup : null,
 						FehlerWindow : null,
@@ -46,17 +46,17 @@
 						upgradeAuswahl : null,
 						meldungArr : null,
 						meldungText : "",
-						p : 0, /*kraftwerk*/
+						p : 0, /* power station */
 						f : 0,
-						g : 0, /*welt*/
-						h : 0, /*Tiberium*/
-						h1 : 0,/*Kristall*/
-						r : 0, /*Raffinerie*/
-						s : 0, /*Silo*/
-						a : 0, /*Akku*/
-						x : 0, /*ressi*/
-						y : 1, /*welt*/
-						z : 0.293, /*welt*/
+						g : 0, /* World */
+						h : 0, /* Tiberium */
+						h1 : 0,/* Crystal */
+						r : 0, /* Refinery */
+						s : 0, /* Silo */
+						a : 0, /* Accumulator */
+						x : 0, /* Resources */
+						y : 1, /* World*/
+						z : 0.293, /* World */
 						geb: 0,
 						def : 0,
 						off : 0,
@@ -76,15 +76,15 @@
 						
 							console.log('FLUNIKTOOLS initialize start');
 							_this.startzeit = new Date();
-							console.log('startzeit: ' + _this.startzeit.toLocaleTimeString() + ' Uhr');
+							console.log('start time: ' + _this.startzeit.toLocaleTimeString() /*+ ' Uhr'*/);
 							
 							_this.listbox = new qx.ui.form.TextArea().set({readOnly: true, height: 200, width: 470});
 							
 							_this.upgradeAuswahl = new Array();
 							_this.meldungArr = new Array();
 							
-							BuildingsButton = new qx.ui.form.Button("Gebäude AUS", null).set({
-								toolTipText: "nur Gebäude upgraden",
+							BuildingsButton = new qx.ui.form.Button("Building OFF", null).set({
+								toolTipText: "Only upgrade buildings",
 								width: 110,
 								height: 30,
 								maxWidth: 110,
@@ -94,8 +94,8 @@
 								
 							});
 							
-							DefenseButton = new qx.ui.form.Button("Verteidigung AUS", null).set({
-								toolTipText: "nur Verteidigung upgraden",
+							DefenseButton = new qx.ui.form.Button("Defense OFF", null).set({
+								toolTipText: "upgrade only defense",
 								width: 110,
 								height: 30,
 								maxWidth: 110,
@@ -105,8 +105,8 @@
 								
 							});
 							
-							OffenseButton = new qx.ui.form.Button("Angriff AUS", null).set({
-								toolTipText: "nur Offensive upgraden",
+							OffenseButton = new qx.ui.form.Button("Offense OFF", null).set({
+								toolTipText: "upgrade only offense",
 								width: 110,
 								height: 30,
 								maxWidth: 110,
@@ -115,8 +115,8 @@
 								center: true,
 								
 							});
-							CommandBuildingChoice = new qx.ui.form.Button("Nur Ressis AUS", null).set({
-								toolTipText: "Ermöglicht, nur Resourcen upzugraden,Hauptgebäude wie Bauhof, Vz, Ve usw werden ausgelassen",
+							CommandBuildingChoice = new qx.ui.form.Button("Only Res OFF", null).set({
+								toolTipText: "Only resource building upgrades. CY,DF,DHQ are ommited",
 								width: 110,
 								height: 30,
 								maxWidth: 110,
@@ -125,8 +125,8 @@
 								center: true,
 								
 							});
-							worldResBuildingChoice = new qx.ui.form.Button("Welt: NEU", null).set({
-								toolTipText: "Neu = Sammler-lastig, Alt = Kraftwerks-lastig",
+							worldResBuildingChoice = new qx.ui.form.Button("World: NEW", null).set({
+								toolTipText: "New = harvester hungry, Old = Power plant hungry.",
 								width: 110,
 								height: 30,
 								maxWidth: 110,
@@ -145,7 +145,7 @@
 							//	center: true,
 							//});
 							
-							PowerBuildingChoice = new qx.ui.form.CheckBox("Kraftw AUS");
+							PowerBuildingChoice = new qx.ui.form.CheckBox("PP's OFF");
 							
 							//HarvBuildingChoice = new qx.ui.form.Button("Tiberium AUS", null).set({
 							//	toolTipText: "P = 0 stoppt Tib-Sammler-upgrading, P = 1 erlaubt Tib-Sammler-upgrading",
@@ -157,7 +157,7 @@
 							//	center: true,
 							//});
 							
-							HarvBuildingChoice = new qx.ui.form.CheckBox("Tiberium AUS");
+							HarvBuildingChoice = new qx.ui.form.CheckBox("Tib OFF");
 							
 							//Harv1BuildingChoice = new qx.ui.form.Button("Kristall AUS", null).set({
 							//	toolTipText: "P = 0 stoppt Kristallsammler-upgrading, P = 1 erlaubt Kristallsammler-upgrading",
@@ -169,7 +169,7 @@
 							//	center: true,
 							//});
 							
-							Harv1BuildingChoice = new qx.ui.form.CheckBox("Kristall AUS");
+							Harv1BuildingChoice = new qx.ui.form.CheckBox("Cry OFF");
 							
 							//RefBuildingChoice = new qx.ui.form.Button("Raffis AUS", null).set({
 							//	toolTipText: "P = 0 stoppt Raffinerie-upgrades, P = 1 erlaubt Raffinerie-upgrades",
@@ -181,7 +181,7 @@
 							//	center: true,
 							//});
 							
-							RefBuildingChoice = new qx.ui.form.CheckBox("Raffis AUS");
+							RefBuildingChoice = new qx.ui.form.CheckBox("Ref's OFF");
 							
 							//SiloBuildingChoice = new qx.ui.form.Button("Silos AUS", null).set({
 							//	toolTipText: "P = 0 stoppt Silo-upgrades, P = 1 erlaubt Silo-upgrades",
@@ -193,7 +193,7 @@
 							//	center: true,
 							//});
 							
-							SiloBuildingChoice = new qx.ui.form.CheckBox("Silos AUS");
+							SiloBuildingChoice = new qx.ui.form.CheckBox("Silos OFF");
 							
 							//AccBuildingChoice = new qx.ui.form.Button("Akkus AUS", null).set({
 							//	toolTipText: "P = 0 stoppt Akku-upgrading, P = 1 erlaubt Akku-upgrading",
@@ -205,7 +205,7 @@
 							//	center: true,
 							//});
 							
-							AccBuildingChoice = new qx.ui.form.CheckBox("Akkus AUS");
+							AccBuildingChoice = new qx.ui.form.CheckBox("Acc's OFF");
 							
 							
 							
@@ -219,7 +219,7 @@
 								showStatusbar : false
 							});
 							
-							_this.FehlerWindow = new qx.ui.window.Window("Scriptfehler :(").set({
+							_this.FehlerWindow = new qx.ui.window.Window("Script error :(").set({
 								contentPadding : 5,
 								appearance : "window",
 								showMinimize : false,
@@ -230,16 +230,16 @@
 							});
 							
 							
-							button = new qx.ui.form.Button("Auto-Upgrade: AUS", "http://goo.gl/Tsst0o").set({
+							button = new qx.ui.form.Button("Auto-Upgrade: OFF", "http://goo.gl/Tsst0o").set({
 								width: 40,
 								height: 40,
-								toolTipText: "Kein automatisches Upgraden aktiv",
+								toolTipText: "No automatic upgrade active",
 								appearance: "button-playarea-mode-frame",
 								center: true,
 							});
 							
-							button1 = new qx.ui.form.Button("Optionen").set({
-								toolTipText: "Optionen",
+							button1 = new qx.ui.form.Button("Options").set({
+								toolTipText: "Options",
 								width: 90,
 								height: 30,
 								maxWidth: 90,
@@ -282,19 +282,19 @@
 								if (window.FlunikTools.Main.getInstance().autoUpdateHandleBuilding != null) {
 									_this.geb = 0;
 									window.FlunikTools.Main.getInstance().BstopAutoUpdate();
-									BuildingsButton.setLabel("Gebäude AUS");
+									BuildingsButton.setLabel("Building OFF");
 									BuildingsButton.setAppearance("button-text-small");
 								} 
 								if (window.FlunikTools.Main.getInstance().autoUpdateHandleDefense != null) {
 									_this.def = 0;
 									window.FlunikTools.Main.getInstance().DstopAutoUpdate();
-									DefenseButton.setLabel("Verteidigung AUS");
+									DefenseButton.setLabel("Defense OFF");
 									DefenseButton.setAppearance("button-text-small");
 								} 
 								if (window.FlunikTools.Main.getInstance().autoUpdateHandleOffense != null) {
 									_this.off = 0;
 									window.FlunikTools.Main.getInstance().OstopAutoUpdate();
-									OffenseButton.setLabel("Angriff AUS");
+									OffenseButton.setLabel("Offense OFF");
 									OffenseButton.setAppearance("button-text-small");
 								} 
 								
@@ -305,12 +305,12 @@
 								if (window.FlunikTools.Main.getInstance().autoUpdateHandleBuilding != null) {
 									_this.geb = 0;
 									window.FlunikTools.Main.getInstance().BstopAutoUpdate();
-									BuildingsButton.setLabel("Gebäude AUS");
+									BuildingsButton.setLabel("Building OFF");
 									BuildingsButton.setAppearance("button-text-small");
 								} else {
 									_this.geb = 1;
 									window.FlunikTools.Main.getInstance().BuildingstartAutoUpdate();
-									BuildingsButton.setLabel("Gebäude AN");
+									BuildingsButton.setLabel("Building ON");
 									BuildingsButton.setAppearance("button-detailview-small");
 								}
 							}, this);
@@ -320,12 +320,12 @@
 								if (window.FlunikTools.Main.getInstance().autoUpdateHandleDefense != null) {
 									_this.def = 0;
 									window.FlunikTools.Main.getInstance().DstopAutoUpdate();
-									DefenseButton.setLabel("Verteidigung AUS");
+									DefenseButton.setLabel("Defense OFF");
 									DefenseButton.setAppearance("button-text-small");
 								} else {
 									_this.def = 1;
 									window.FlunikTools.Main.getInstance().DefensestartAutoUpdate();
-									DefenseButton.setLabel("Verteidigung AN");
+									DefenseButton.setLabel("Defense ON");
 									DefenseButton.setAppearance("button-detailview-small");
 								}
 							}, this);
@@ -335,12 +335,12 @@
 								if (window.FlunikTools.Main.getInstance().autoUpdateHandleOffense != null) {
 									_this.off = 0;
 									window.FlunikTools.Main.getInstance().OstopAutoUpdate();
-									OffenseButton.setLabel("Angriff AUS");
+									OffenseButton.setLabel("Offense OFF");
 									OffenseButton.setAppearance("button-text-small");
 								} else {
 									_this.off = 1;
 									window.FlunikTools.Main.getInstance().OffensestartAutoUpdate();
-									OffenseButton.setLabel("Angriff AN");
+									OffenseButton.setLabel("Offense ON");
 									OffenseButton.setAppearance("button-detailview-small");
 								}
 							}, this);
@@ -350,14 +350,14 @@
 								if (_this.x != 0) {
 									_this.x = 0;
 									window.FlunikTools.Main.getInstance().OffFunction();
-									CommandBuildingChoice.setLabel("Nur Ressis AUS");
+									CommandBuildingChoice.setLabel("Only Res OFF");
 									CommandBuildingChoice.setAppearance("button-text-small");
 									console.log(_this.x + " normal mode");
 									
 								} else {
 									_this.x = 1;
 									window.FlunikTools.Main.getInstance().OnFunction();
-									CommandBuildingChoice.setLabel("Nur Ressis AN");
+									CommandBuildingChoice.setLabel("Only Res ON");
 									CommandBuildingChoice.setAppearance("button-detailview-small");
 									console.log(_this.x + " ResOnly mode");
 								}
@@ -367,7 +367,7 @@
 								  var _this = window.FlunikTools.Main.getInstance();
 								if (window.FlunikTools.Main.getInstance().AautoUpdateHandle != null) {
 									window.FlunikTools.Main.getInstance().OffFunction();
-									worldResBuildingChoice.setLabel("Welt: NEU");
+									worldResBuildingChoice.setLabel("World: New");
 									worldResBuildingChoice.setAppearance("button-text-small");
 									_this.y = 1;
 									_this.z = 0.293;
@@ -375,7 +375,7 @@
 									console.log("_this.y "+_this.y + " _this.z " +_this.z +" new world mode" + "_this.g" + _this.g + "tibcost");
 								} else {
 									window.FlunikTools.Main.getInstance().OnFunction();
-									worldResBuildingChoice.setLabel("Welt: ALT");
+									worldResBuildingChoice.setLabel("World: Old");
 									worldResBuildingChoice.setAppearance("button-detailview-small");
 									_this.y = 0.293;
 									_this.z = 1;
@@ -389,7 +389,7 @@
 								if (_this.p != 0) {
 									_this.p = 0;
 									window.FlunikTools.Main.getInstance().OffFunction();
-									PowerBuildingChoice.setLabel("Kraftw AUS");
+									PowerBuildingChoice.setLabel("PP's OFF");
 									PowerBuildingChoice.setValue(false);
 									
 									console.log(_this.p + " Power off mode");
@@ -398,7 +398,7 @@
 								} else {
 									_this.p = 1;
 									window.FlunikTools.Main.getInstance().OnFunction();
-									PowerBuildingChoice.setLabel("Kraftw AN");
+									PowerBuildingChoice.setLabel("PP's ON");
 									PowerBuildingChoice.setValue(true);
 									
 									console.log(_this.p + " Power On mode");
@@ -411,7 +411,7 @@
 								if (_this.h != 0) {
 									_this.h = 0;
 									window.FlunikTools.Main.getInstance().OffFunction();
-									HarvBuildingChoice.setLabel("Tiberium AUS");
+									HarvBuildingChoice.setLabel("Tib OFF");
 									HarvBuildingChoice.setValue(false);
 									
 									console.log(_this.h + " Green Harvester off mode");
@@ -420,7 +420,7 @@
 								} else {
 									_this.h = 1;
 									window.FlunikTools.Main.getInstance().OnFunction();
-									HarvBuildingChoice.setLabel("Tiberium AN");
+									HarvBuildingChoice.setLabel("Tib ON");
 									HarvBuildingChoice.setValue(true);
 									
 									console.log(_this.h + " Green Harvester On mode");
@@ -435,7 +435,7 @@
 								if (_this.h1 != 0) {
 									_this.h1 = 0;
 									window.FlunikTools.Main.getInstance().OffFunction();
-									Harv1BuildingChoice.setLabel("Kristall AUS");
+									Harv1BuildingChoice.setLabel("Cry OFF");
 									Harv1BuildingChoice.setValue(false);
 									
 									console.log(_this.h1 + " Blue Harvester off mode");
@@ -444,7 +444,7 @@
 								} else {
 									_this.h1 = 1;
 									window.FlunikTools.Main.getInstance().OnFunction();
-									Harv1BuildingChoice.setLabel("Kristall AN");
+									Harv1BuildingChoice.setLabel("Cry ON");
 									Harv1BuildingChoice.setValue(true);
 									
 									console.log(_this.h1 + " Blue Harvester On mode");
@@ -457,7 +457,7 @@
 								if (_this.r != 0) {
 									_this.r = 0;
 									window.FlunikTools.Main.getInstance().OffFunction();
-									RefBuildingChoice.setLabel("Raffis AUS");
+									RefBuildingChoice.setLabel("Ref's OFF");
 									RefBuildingChoice.setValue(false);
 									
 									console.log(_this.r + " Refinery off mode");
@@ -466,7 +466,7 @@
 								} else {
 									_this.r = 1;
 									window.FlunikTools.Main.getInstance().OnFunction();
-									RefBuildingChoice.setLabel("Raffis AN");
+									RefBuildingChoice.setLabel("Ref's ON");
 									RefBuildingChoice.setValue(true);
 									
 									console.log(_this.r + " Refinery On mode");
@@ -479,7 +479,7 @@
 									if (_this.s != 0) {
 									_this.s = 0;
 									window.FlunikTools.Main.getInstance().OffFunction();
-									SiloBuildingChoice.setLabel("Silos AUS");
+									SiloBuildingChoice.setLabel("Silos OFF");
 									SiloBuildingChoice.setValue(false);
 									
 									console.log(_this.s + " Silo off mode");
@@ -488,7 +488,7 @@
 								} else {
 								    _this.s = 1;
 									window.FlunikTools.Main.getInstance().OnFunction();
-									SiloBuildingChoice.setLabel("Silos AN");
+									SiloBuildingChoice.setLabel("Silos ON");
 									SiloBuildingChoice.setValue(true);
 									
 									console.log(_this.s + " Silo On mode");
@@ -501,7 +501,7 @@
 								if (_this.a != 0) {
 								    _this.a = 0;
 									window.FlunikTools.Main.getInstance().OffFunction();
-									AccBuildingChoice.setLabel("Akkus AUS");
+									AccBuildingChoice.setLabel("Acc's OFF");
 									AccBuildingChoice.setValue(false);
 									
 									console.log(_this.a + " Accumulator off mode");
@@ -510,7 +510,7 @@
 								} else {
 								    _this.a = 1;
 									window.FlunikTools.Main.getInstance().OnFunction();
-									AccBuildingChoice.setLabel("Akkus AN");
+									AccBuildingChoice.setLabel("Acc's ON");
 									AccBuildingChoice.setValue(true);
 									
 									console.log(_this.a + " Accumulator On mode");
@@ -565,11 +565,11 @@
 								_this.rangAllyStart = _this.AllianzRang('meinRang');
 								_this.rangstart = ClientLib.Data.MainData.GetInstance().get_Player().get_OverallRank();
 								counter++;
-								console.info("init GLOBAL RANG: " + _this.rangstart + ", bool: " + (_this.rangstart != 0) + ", Versuche: " + counter);
-								console.info("init MYALLY RANG: " + _this.rangAllyStart + ", bool: " + (_this.rangAllyStart != 0) + ", Versuche: " + counter);
+								console.info("init GLOBAL Rank: " + _this.rangstart + ", bool: " + (_this.rangstart != 0) + ", attempts: " + counter);
+								console.info("init MYALLY Rank: " + _this.rangAllyStart + ", bool: " + (_this.rangAllyStart != 0) + ", attempts: " + counter);
 								if( _this.rangstart != 0 && _this.rangAllyStart != 0){
 									window.clearInterval(intervall); 
-									console.log("Intervall nach " + counter + " Versuchen gestoppt");
+									console.log("Interval stopped after " + counter + " attempts");
 								}
 							}
 							
@@ -616,8 +616,9 @@
 							//new qx.ui.layout.Grid(5)
 							//new qx.ui.container.Composite(new qx.ui.layout.VBox(6)).set({ width: 100, padding: 5, decorator: "pane-light-opaque"});
 							var boxTitelA = new qx.ui.container.Composite(new qx.ui.layout.VBox()).set({margin:0, padding:2, decorator: "pane-light-opaque"});
-							var lblTitelA = new qx.ui.basic.Label("Grundeinstellungen für ALLE Basen").set({ alignX: "center", alignY: "center", font: "font_size_14_bold"});
+							var lblTitelA = new qx.ui.basic.Label("Basic settings for ALL bases").set({ alignX: "center", alignY: "center", font: "font_size_14_bold"});
 							var boxLblInfo = new qx.ui.container.Composite(new qx.ui.layout.VBox()).set({margin:5, padding:5, decorator: "pane-light-opaque"});
+							// KAD TODO: update here
 							var lblINFO = new qx.ui.basic.Label("Mail an den <a href=\"mailto:derchillchef@aol.com\">Chillchef</a><br>oder<br>guck mal bei <a href=\"https://greasyfork.org/de/users/5866-chillchef\" target=\"_blank\">greasyfork.org </a>vorbei!").set({rich: "true", alignX: "left", alignY: "center", font: "font_size_14_bold"});
 							boxLblInfo.add(lblINFO);
 							tabviewZWEI.add(boxLblInfo);
@@ -682,7 +683,7 @@
 										wert = _this.upgradeAuswahl[name][item][0].getValue();
 									}
 								}
-								basisEinheiten['BasisUpgrAktiv'] = (new Array(new qx.ui.form.CheckBox("Basisupgrade Aktiv").set({value: wert, font: "font_size_14_bold"}), 99));
+								basisEinheiten['BasisUpgrAktiv'] = (new Array(new qx.ui.form.CheckBox("Base upgrade active").set({value: wert, font: "font_size_14_bold"}), 99));
 								page.add(basisEinheiten['BasisUpgrAktiv'][0],{row: 0, column: 0});
 								basisEinheiten['BasisUpgrAktiv'][0].addListener("click", function (e) {
 									for(basis in _this.upgradeAuswahl){
@@ -725,7 +726,7 @@
 										status = _this.upgradeAuswahl[name][item][0].isEnabled();
 									}
 								}
-								basisEinheiten['GebAktiv'] = (new Array(new qx.ui.form.CheckBox("<b><u>Gebäude Aktiv</b></u>").set({value: wert, enabled: status, rich: true}), 99));
+								basisEinheiten['GebAktiv'] = (new Array(new qx.ui.form.CheckBox("<b><u>Building active</b></u>").set({value: wert, enabled: status, rich: true}), 99));
 								page.add(basisEinheiten['GebAktiv'][0],{row: 2, column: 0});
 								basisEinheiten['GebAktiv'][0].addListener("click", function (e) {
 									for(basis in _this.upgradeAuswahl){
@@ -822,7 +823,7 @@
 										var status = true;
 										var sammler = ClientLib.Base.Tech.GetTechDisplayNameFromTechId(ClientLib.Base.ETech.FOR_Harvester);
 										if ((gebäudeliste[elem][2] == ClientLib.Base.ETechName.Harvester) && (gebäudeliste[elem][1] == ClientLib.Base.EResourceType.Crystal)){
-											eintrag = sammler + ' Kristall';
+											eintrag = sammler + ' Crystal';
 										}
 										if((gebäudeliste[elem][2] == ClientLib.Base.ETechName.Harvester) && (gebäudeliste[elem][1] == ClientLib.Base.EResourceType.Tiberium)){
 											eintrag = sammler + ' Tiberium';
@@ -860,7 +861,7 @@
 											status = _this.upgradeAuswahl[name][item][0].isEnabled();
 										}
 									}
-									basisEinheiten['DefAktiv'] = (new Array(new qx.ui.form.CheckBox("<b><u>Defensive Aktiv</b></u>").set({value: wert, enabled: status, rich: true}), 99));
+									basisEinheiten['DefAktiv'] = (new Array(new qx.ui.form.CheckBox("<b><u>Defense active</b></u>").set({value: wert, enabled: status, rich: true}), 99));
 									page.add(basisEinheiten['DefAktiv'][0],{row: reihe, column: 0});
 									basisEinheiten['DefAktiv'][0].addListener("click", function (e) {
 										for(basis in _this.upgradeAuswahl){
@@ -921,7 +922,7 @@
 											status = _this.upgradeAuswahl[name][item][0].isEnabled();
 										}
 									}
-									basisEinheiten['OffAktiv'] = (new Array(new qx.ui.form.CheckBox("<b><u>Offensive Aktiv</b></u>").set({value: wert, enabled: status, rich: true}), 99));
+									basisEinheiten['OffAktiv'] = (new Array(new qx.ui.form.CheckBox("<b><u>Offense active</b></u>").set({value: wert, enabled: status, rich: true}), 99));
 									page.add(basisEinheiten['OffAktiv'][0],{row: reihe, column: 0});
 									basisEinheiten['OffAktiv'][0].addListener("click", function (e) {
 										for(basis in _this.upgradeAuswahl){
@@ -985,7 +986,7 @@
 							
 							var boxE = new qx.ui.container.Composite(new qx.ui.layout.HBox(5)).set({margin: 0, padding: 10, decorator: "pane-light-opaque"});//enhält liste + statusbox
 							var boxH = new qx.ui.container.Composite(new qx.ui.layout.VBox(2)).set({margin: 0});
-							var lblHa = new qx.ui.basic.Label("Upgrade-Fehler: " + (_this.upgradeCount - _this.realUpgradeCount)).set({ alignX: "left", alignY: "top"});
+							var lblHa = new qx.ui.basic.Label("Upgrade-Error: " + (_this.upgradeCount - _this.realUpgradeCount)).set({ alignX: "left", alignY: "top"});
 							var lblHb = new qx.ui.basic.Label("Upgrade-OK    : " + (_this.realUpgradeCount)).set({ alignX: "left", alignY: "top"});
 							var ckboxH = new qx.ui.form.CheckBox("Stop Log").set({value: false})
 							var textH = new qx.ui.form.TextArea().set({readOnly: true, height: 160, maxHeight: 160, width: 250, maxWidth: 300 });
@@ -997,7 +998,7 @@
 							boxE.add(boxH);
 							var rangAktuell = 0;
 							var boxG = new qx.ui.container.Composite(new qx.ui.layout.HBox(15, "center"));//.set({margin:0, padding:3, decorator: "pane-light-opaque"});
-							var lblGa = new qx.ui.basic.Label("Rangänderung seit Start: " + rangAktuell);//.set({ alignX: "center", alignY: "center"});
+							var lblGa = new qx.ui.basic.Label("Rank change since start: " + rangAktuell);//.set({ alignX: "center", alignY: "center"});
 							var lblGb = new qx.ui.basic.Label("0:00:00:00");//.set({ alignX: "center", alignY: "center"});
 							var lblGc = new qx.ui.basic.Label("Ally:");
 							boxG.add(lblGa);
@@ -1015,10 +1016,10 @@
 									rangAktuell = rangAktuell == 0 ? "±0" : rangAktuell;
 									rangdiff = rangdiff > 0 ? "+" + rangdiff : rangdiff;
 									rangdiff = rangdiff == 0 ? "±0" : rangdiff;
-									lblGc.setValue(' Ally Rang ' + _this.AllianzRang('meinRang') + ' von ' + _this.AllianzRang('memberAnz') + ' (' + rangdiff + ')' );
+									lblGc.setValue(' Ally Rank ' + _this.AllianzRang('meinRang') + ' von ' + _this.AllianzRang('memberAnz') + ' (' + rangdiff + ')' );
 									lblGb.setValue(' [' + _this.Diffzeit() + ']');
-									lblGa.setValue("Rangänderung seit Start: " + rangAktuell);
-									lblHa.setValue("Upgrade-Fehler: " + (_this.upgradeCount - _this.realUpgradeCount));
+									lblGa.setValue("Rank change since start: " + rangAktuell);
+									lblHa.setValue("Upgrade-Error: " + (_this.upgradeCount - _this.realUpgradeCount));
 									lblHb.setValue("Upgrade-OK    : " + (_this.realUpgradeCount));
 									_this.listbox.setValue(_this.listboxstring);
 									if(!ckboxH.getValue())textH.setValue(_this.meldungText);
@@ -1163,7 +1164,7 @@
 							//}
 							//console.log("ausgeführte Upgrades(angefordert): " + _this.letzteAUGs);
 							//console.log("Array listearr(real): " + listearr);
-							_this.EinAusLabel("Auswertung(" + sender + ")");
+							_this.EinAusLabel("Evaluation(" + sender + ")");
 						},
 						
                         Zeitstempel : function() {
@@ -1183,7 +1184,7 @@
 							var kat = _this.geb + _this.def + _this.off;
 							var option =  _this.p + _this.f + _this.h + _this.h1 + _this.r + _this.s + _this.a;
 							var summe = option + _this.x;
-							var status = _this.geb == 0 && _this.def == 0 && _this.off == 0 ? " AUS" : " EIN";
+							var status = _this.geb == 0 && _this.def == 0 && _this.off == 0 ? " OFF" : " ON";
 							var ttt = "<html><font size=+0.1><font color=red><b><u>Auto-Upgrade-Status:</u></b></font><b>"+ status +"</b><br>";
 							var uglist = "";
 							
@@ -1193,17 +1194,17 @@
 								}
 							}
 							
-							ttt = _this.geb > 0 ? ttt + "<br>Gebäude <b>EIN</b>" : ttt;
-							ttt = _this.def > 0 ? ttt + "<br>Verteidigung <b>EIN</b>" : ttt;
-							ttt = _this.off > 0 ? ttt + "<br>Angriff <b>EIN</b>" : ttt;
-							ttt = _this.x > 0 ? ttt + "<br>Nur-Ressi-Upgrade <b>EIN</b>" : ttt;
-							ttt = option > 0 ? ttt + "<br><font color=red>Optionen:</font>" : ttt;
-							ttt = _this.p > 0 ? ttt + "<br>Kraftwerke <b>EIN</b>" : ttt;
-							ttt = _this.r > 0 ? ttt + "<br>Raffinerien <b>EIN</b>" : ttt;
-							ttt = _this.h > 0 ? ttt + "<br>Tiberiumsammler <b>EIN</b>" : ttt;
-							ttt = _this.h1 > 0 ? ttt + "<br>Kristallsammler <b>EIN</b>" : ttt;
-							ttt = _this.s > 0 ? ttt + "<br>Silos <b>EIN</b>" : ttt;
-							ttt = _this.a > 0 ? ttt + "<br>Akkumulatoren <b>EIN</b>" : ttt;
+							ttt = _this.geb > 0 ? ttt + "<br>Building <b>ON</b>" : ttt;
+							ttt = _this.def > 0 ? ttt + "<br>Defense <b>ON</b>" : ttt;
+							ttt = _this.off > 0 ? ttt + "<br>Offense <b>ON</b>" : ttt;
+							ttt = _this.x > 0 ? ttt + "<br>Only Res upgrade <b>ON</b>" : ttt;
+							ttt = option > 0 ? ttt + "<br><font color=red>Options:</font>" : ttt;
+							ttt = _this.p > 0 ? ttt + "<br>PP's <b>ON</b>" : ttt;
+							ttt = _this.r > 0 ? ttt + "<br>Ref's <b>ON</b>" : ttt;
+							ttt = _this.h > 0 ? ttt + "<br>Tib harvesters <b>ON</b>" : ttt;
+							ttt = _this.h1 > 0 ? ttt + "<br>Cry harvesters <b>ON</b>" : ttt;
+							ttt = _this.s > 0 ? ttt + "<br>Silos <b>ON</b>" : ttt;
+							ttt = _this.a > 0 ? ttt + "<br>Acc's <b>ON</b>" : ttt;
 							ttt = uglist != "" ? ttt + "<br>&nbsp;<br><font color=red>Letzte Auto-Upgrades:</font>" + uglist : ttt;
 							ttt = ttt + "<br>&nbsp;</font></html>";
 							
@@ -1215,7 +1216,7 @@
 							button.setUserData("isNotification", true);
 							}
 							else{_this.einaus = 0;
-							button.setLabel("Auto-Upgrade: AUS");
+							button.setLabel("Auto-Upgrade: OFF");
 							button.setAppearance("button-playarea-mode-frame");
 							button.setIcon("http://goo.gl/Tsst0o");
 							button.set({toolTipText:ttt});
@@ -1253,7 +1254,7 @@
 								if(!basisAktiv || !katAktiv ){return false;}
 								else{return ugoAktiv;}
 							}catch(e){
-								console.log('FEHLER IN Funktion \'DarfUpgraden\':\nbasis:' + basis + '\nkat:' + kat + '\ngebäude:' + gebäude +'\neinheit:' + einheit + '\nressityp:' + ressityp + '\nbasisAktiv:'
+								console.log('Error in function \'DarfUpgraden\':\nbasis:' + basis + '\nkat:' + kat + '\ngebäude:' + gebäude +'\neinheit:' + einheit + '\nressityp:' + ressityp + '\nbasisAktiv:'
 											+ basisAktiv + '\nugo:' + ugo + '\nugoAktiv:' + ugoAktiv); 
 								console.log(e.toString());
 								console.info('BASISLAYOUT GEÄNDERT! LADE BASISDATEN ERNEUT...');
@@ -1432,19 +1433,19 @@
 						
 						BuildingstartAutoUpdate: function () {
 							
-							this.autoUpdateHandleBuilding = window.setInterval(this.BuildingautoUpgrade, (this.ugZeit+100));
+							this.autoUpdateHandleBuilding = window.setInterval(this.BuildingautoUpgrade, (this.ugTime+100));
 							this.EinAusLabel("BuildingstartAutoUpdate()");
 						},
 						
 						OffensestartAutoUpdate: function () {
 							
-							this.autoUpdateHandleOffense = window.setInterval(this.OffenseautoUpgrade, (this.ugZeit+300));
+							this.autoUpdateHandleOffense = window.setInterval(this.OffenseautoUpgrade, (this.ugTime+300));
 							this.EinAusLabel("OffensestartAutoUpdate()");
 						},
 						
 						DefensestartAutoUpdate: function () {
 							
-							this.autoUpdateHandleDefense = window.setInterval(this.DefenseautoUpgrade, (this.ugZeit+500));
+							this.autoUpdateHandleDefense = window.setInterval(this.DefenseautoUpgrade, (this.ugTime+500));
 							this.EinAusLabel("DefensestartAutoUpdate()");
 						},
 						
@@ -2427,8 +2428,8 @@ Upgrade Resource Defining
 								}
 								}catch(e)
 									{
-										console.log("1.: Fehler in \"The Building Function(Flunik-Script)\" ('for (var nBuildings in buildings.d){...}')  " + _this.Zeitstempel() );
-										console.log("2.: Fehler: " + e.toString());
+										console.log("1.: Error in \"The Building Function(Flunik-Script)\" ('for (var nBuildings in buildings.d){...}')  " + _this.Zeitstempel() );
+										console.log("2.: Error: " + e.toString());
 										_this.FehlerWindow.setLayout(new qx.ui.layout.VBox());
 										_this.FehlerWindow.setWidth(500);
 										if (!_this.FehlerWindow.isVisible()){
