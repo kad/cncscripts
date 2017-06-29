@@ -3,7 +3,7 @@
 // @namespace		FlunikTools
 // @include			http*://prodgame*.alliances.commandandconquer.com/*/index.aspx*
 // @description		Autoupgrade your bases, script based on FlunikTools
-// @version			1.1+l0
+// @version			1.1+l1
 // @authors			many others and Chillchef, l0vader 
 // @grant			none
 // @icon			http://eaassets-a.akamaihd.net/cncalliancesweb/static/2.1/theme/cca-home-redux-theme/images/global/logo.png
@@ -537,14 +537,14 @@
 							button.addListener("click", function(e)
 								{
 									var _this = window.FlunikTools.Main.getInstance();
-									popup.placeToMouse(e);
+									popup.placeToPointer(e);
 									//popup.show();
 									_this.autoUpgradePopupOeffnen();
 								}, this);
 								
 							button1.addListener("click", function(e)
 								{
-									popup1.placeToMouse(e);
+									popup1.placeToPointer(e);
 									popup1.show();
 								}, this);
 						
@@ -1272,6 +1272,9 @@
 							var gebäudename = building.get_TechGameData_Obj().dn;
 							var basisname = city.get_Name();
 							
+							if(nextLevel > 65) {
+								return false;
+							}
 							if(!_this.DarfUpgraden('geb', basisname, gebäudename, ressityp, null)) {
 								_this.Meldung('canUpgradeBuilding:\n ' + basisname + '\n' + 'Geb.: ' + gebäudename + '\n' + 'DarfUpgraden: ' + 'false' 
 											+ '\nhasEnoughResources: ' + hasEnoughResources + '\n' +
@@ -1298,7 +1301,9 @@
 							var levelReq = ClientLib.Base.Util.GetUnitLevelRequirements_Obj(nextLevel, gameDataTech);
 							var reqTechIndexes = _this.getMissingTechIndexesFromTechLevelRequirement(levelReq, true, city);
 							
-							
+							if(nextLevel > 65) {
+								return false;
+							}
 							if(!_this.DarfUpgraden(kat, basisname, null, null, einheitname)) {
 								_this.Meldung('canUpgradeUnit:\n' + basisname + '\n' + 'Unit: ' + einheitname + '\n' + 'Geb.: ' + building.get_TechGameData_Obj().dn + 
 											'\nDarfUpgraden: ' + 'false' +
